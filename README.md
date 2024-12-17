@@ -2,13 +2,13 @@
 
 
 # Commit 1: 
-Commit 1 features: 
+ 
 1. App starting
 2. Welcome screen building
 
 
 # Commit 2: 
-Commit 2 features: 
+
 1. Screens now working
 2. Login Screen added
 3. Register Screen added
@@ -18,3 +18,7 @@ Commit 2 features:
 7. Maps Screen under construction
 8. Added Login and Register with Firebase
    
+# Commit 2.5: 
+
+1. Re added in the google services dependencies etc to stop the app from crashing
+2. Commented on all the code for readablility 
