@@ -1,42 +1,77 @@
 package ie.tus.libloans.screens
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import ie.tus.libloans.ui.theme.LibLoansTheme
 
-class WelcomeScreen(navController: NavHostController) : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            LibLoansTheme {
-                WelcomeContent(onLoginClick = {
-                    startActivity(Intent(this, LoginScreen::class.java))
-                }, onRegisterClick = {
-                    startActivity(Intent(this, RegisterScreen::class.java))
-                })
-            }
+@Composable
+fun WelcomeScreen(navController: NavHostController) {
+
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+
+        ) {
+            WelcomeScreenContent(
+                onLoginClick = {
+                    // Navigate to the LoginScreen
+                    navController.navigate("loginScreen")
+                },
+                onRegisterClick = {
+                    // Navigate to the RegisterScreen
+                    navController.navigate("registerScreen")
+                }
+            )
         }
     }
-}
+
 
 @Composable
-fun WelcomeContent(onLoginClick: () -> Unit, onRegisterClick: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = "Welcome to LibLoans")
-        Button(onClick = onLoginClick) {
+private fun WelcomeScreenContent(onLoginClick: () -> Unit, onRegisterClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Welcome to LibLoans",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.DarkGray
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onLoginClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
             Text(text = "Login")
         }
-        Button(onClick = onRegisterClick) {
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onRegisterClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
             Text(text = "Register")
         }
     }
@@ -44,8 +79,11 @@ fun WelcomeContent(onLoginClick: () -> Unit, onRegisterClick: () -> Unit) {
 
 @Preview
 @Composable
-fun WelcomePreview() {
+fun WelcomeScreenPreview() {
     LibLoansTheme {
-        WelcomeContent({}, {})
+        WelcomeScreenContent(
+            onLoginClick = {},
+            onRegisterClick = {}
+        )
     }
 }

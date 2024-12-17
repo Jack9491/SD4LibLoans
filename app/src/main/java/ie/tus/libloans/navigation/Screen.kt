@@ -1,16 +1,25 @@
 package ie.tus.libloans.navigation
 
+sealed class Screen(val route: String) {
 
-sealed class Screen(
-    val route: String
-){
-    data object WelcomeScreen: Screen("welcomeScreen")
-    data object LoginScreen: Screen("loginScreen")
-    data object RegisterScreen: Screen("registerScreen")
+     object WelcomeScreen: Screen("welcomeScreen")
+     object LoginScreen: Screen("loginScreen")
+     object RegisterScreen: Screen("registerScreen")
+     object HomeScreen: Screen("homeScreen")
+     object SearchScreen: Screen("searchScreen")
+     object LoanScreen: Screen("loanScreen")
+     object BookDetailsScreen: Screen("bookDetailsScreen")
+     object MapScreen: Screen("MapScreen")
+
 }
 
 val screens = listOf(
-    Screen.WelcomeScreen,
-    Screen.RegisterScreen,
-    Screen.LoginScreen
+     Screen.WelcomeScreen,
+     Screen.LoginScreen,
+     Screen.RegisterScreen,
+     Screen.HomeScreen,
+     Screen.SearchScreen,
+     Screen.LoanScreen,
+     Screen.BookDetailsScreen,
+     Screen.MapScreen
 )

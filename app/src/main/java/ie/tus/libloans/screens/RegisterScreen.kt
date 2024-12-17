@@ -1,57 +1,133 @@
 package ie.tus.libloans.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import android.widget.Toast
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import ie.tus.libloans.ui.theme.LibLoansTheme
+import com.google.firebase.auth.FirebaseAuth
 
-class RegisterScreen(navController: NavHostController) : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            LibLoansTheme {
-                RegisterContent(onRegisterSubmit = { name, email, username, password ->
-                    // Handle registration logic here
-                })
-            }
-        }
+@Composable
+fun RegisterScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val auth = remember { FirebaseAuth.getInstance() }
+    var isLoading by remember { mutableStateOf(false) }
+
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        RegisterScreenContent(
+            onRegisterSubmit = { email, password ->
+                isLoading = true
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        isLoading = false
+                        if (task.isSuccessful) {
+                            Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
+                            navController.navigate("loginScreen") // Navigate to LoginScreen
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Registration Failed: ${task.exception?.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+            },
+            isLoading = isLoading
+        )
     }
 }
 
 @Composable
-fun RegisterContent(onRegisterSubmit: (String, String, String, String) -> Unit) {
+private fun RegisterScreenContent(
+    onRegisterSubmit: (String, String) -> Unit,
+    isLoading: Boolean
+) {
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = "Register")
-        TextField(value = name.value, onValueChange = { name.value = it }, label = { Text("Name") })
-        TextField(value = email.value, onValueChange = { email.value = it }, label = { Text("Email") })
-        TextField(value = username.value, onValueChange = { username.value = it }, label = { Text("Username") })
-        TextField(value = password.value, onValueChange = { password.value = it }, label = { Text("Password") })
-        Button(onClick = { onRegisterSubmit(name.value, email.value, username.value, password.value) }) {
-            Text(text = "Register")
-        }
-    }
-}
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Register",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.DarkGray
+        )
 
-@Preview
-@Composable
-fun RegisterPreview() {
-    LibLoansTheme {
-        RegisterContent { _, _, _, _ -> }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Input Fields
+        OutlinedTextField(
+            value = name.value,
+            onValueChange = { name.value = it },
+            label = { Text("Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = email.value,
+            onValueChange = { email.value = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = username.value,
+            onValueChange = { username.value = it },
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = password.value,
+            onValueChange = { password.value = it },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Register Button
+        Button(
+            onClick = {
+                onRegisterSubmit(email.value, password.value)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+            } else {
+                Text(text = "Register")
+            }
+        }
     }
 }
