@@ -7,7 +7,7 @@ Commit 1 features:
 2. Welcome screen building
 
 
-#Commit 2: 
+# Commit 2: 
 Commit 2 features: 
 1. Screens now working
 2. Login Screen added
