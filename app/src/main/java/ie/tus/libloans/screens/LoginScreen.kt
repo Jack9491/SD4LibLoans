@@ -15,26 +15,30 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 
+// LoginScreen - Entry point for user login with Firebase Authentication
 @Composable
 fun LoginScreen(navController: NavHostController) {
     val context = LocalContext.current
-    val auth = remember { FirebaseAuth.getInstance() }
-    var isLoading by remember { mutableStateOf(false) }
+    val auth = remember { FirebaseAuth.getInstance() } // FirebaseAuth instance
+    var isLoading by remember { mutableStateOf(false) } // Loading state for login button
 
     Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        // Content of the Login Screen
         LoginScreenContent(
             onLoginSubmit = { email, password ->
-                isLoading = true
+                isLoading = true // Show loading state
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
-                        isLoading = false
+                        isLoading = false // Stop loading
                         if (task.isSuccessful) {
+                            // Login successful
                             Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                            navController.navigate("homeScreen")
+                            navController.navigate("homeScreen") // Navigate to home
                         } else {
+                            // Login failed, show error message
                             Toast.makeText(
                                 context,
                                 "Login Failed: ${task.exception?.message}",
@@ -48,14 +52,17 @@ fun LoginScreen(navController: NavHostController) {
     }
 }
 
+// LoginScreenContent - UI content for login functionality
 @Composable
 private fun LoginScreenContent(
-    onLoginSubmit: (String, String) -> Unit,
-    isLoading: Boolean
+    onLoginSubmit: (String, String) -> Unit, // Callback for login action
+    isLoading: Boolean // Flag to show loading indicator
 ) {
+    // State for email and password fields
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
+    // Main layout container
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,6 +70,7 @@ private fun LoginScreenContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Screen Title
         Text(
             text = "Login",
             fontSize = 24.sp,
@@ -72,7 +80,7 @@ private fun LoginScreenContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Input Fields
+        // Email Input Field
         OutlinedTextField(
             value = email.value,
             onValueChange = { email.value = it },
@@ -82,11 +90,12 @@ private fun LoginScreenContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Password Input Field
         OutlinedTextField(
             value = password.value,
             onValueChange = { password.value = it },
             label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = PasswordVisualTransformation(), // Hide password text
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -94,16 +103,18 @@ private fun LoginScreenContent(
 
         // Login Button
         Button(
-            onClick = { onLoginSubmit(email.value, password.value) },
+            onClick = { onLoginSubmit(email.value, password.value) }, // Trigger login action
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            enabled = !isLoading // Disable button while loading
         ) {
             if (isLoading) {
+                // Show loading spinner when login is in progress
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier.size(24.dp)
                 )
             } else {
+                // Default button text
                 Text(text = "Login")
             }
         }

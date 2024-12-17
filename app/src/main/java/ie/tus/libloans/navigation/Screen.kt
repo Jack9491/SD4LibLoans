@@ -8,6 +8,7 @@ sealed class Screen(val route: String) {
      object HomeScreen: Screen("homeScreen")
      object SearchScreen: Screen("searchScreen")
      object LoanScreen: Screen("loanScreen")
+     object ReturnsScreen: Screen("returnsScreen")
      object BookDetailsScreen: Screen("bookDetailsScreen")
      object MapScreen: Screen("MapScreen")
 
@@ -20,6 +21,7 @@ val screens = listOf(
      Screen.HomeScreen,
      Screen.SearchScreen,
      Screen.LoanScreen,
+     Screen.ReturnsScreen,
      Screen.BookDetailsScreen,
      Screen.MapScreen
 )

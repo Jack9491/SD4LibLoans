@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import ie.tus.libloans.R
 import ie.tus.libloans.ui.theme.LibLoansTheme
 
+// Main screen for displaying book details
 @Composable
 fun BookDetailsScreen(
     navController: NavHostController,
@@ -32,14 +33,15 @@ fun BookDetailsScreen(
             bookTitle = bookTitle,
             bookDescription = bookDescription,
             bookGenre = bookGenre,
-            onBackClick = { navController.popBackStack() },
+            onBackClick = { navController.popBackStack() }, // Handle back button
             onLoanClick = {
-                // Handle loan book action here
+                // TODO loan book action logic
             }
         )
     }
 }
 
+// Content for BookDetailsScreen
 @Composable
 private fun BookDetailsScreenContent(
     bookTitle: String,
@@ -51,17 +53,17 @@ private fun BookDetailsScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF101010))
+            .background(Color(0xFF101010)) // Dark background
             .padding(16.dp)
     ) {
-        // Top Bar
+        // Top Bar with Back Button and Title
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBackClick) {
+            IconButton(onClick = onBackClick) { // Back Button
                 Icon(
                     painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = "Back",
@@ -70,14 +72,14 @@ private fun BookDetailsScreenContent(
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "Book Details",
+                text = "Book Details", // Screen Title
                 color = Color(0xFFFBC02D),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
         }
 
-        // Book Image
+        // Book Image Placeholder
         Box(
             modifier = Modifier
                 .size(150.dp)
@@ -103,7 +105,7 @@ private fun BookDetailsScreenContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Book Details Card
+        // Card with Book Details
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFECECEC)),
@@ -114,6 +116,7 @@ private fun BookDetailsScreenContent(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
+                // Book Title
                 Text(
                     text = bookTitle,
                     color = Color.Black,
@@ -121,18 +124,24 @@ private fun BookDetailsScreenContent(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
+
+                // Book Description
                 Text(
                     text = "Book Description: $bookDescription",
                     color = Color.Black.copy(alpha = 0.7f),
                     fontSize = 16.sp
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+
+                // Book Genre
                 Text(
                     text = "Book Genre: $bookGenre",
                     color = Color.Black.copy(alpha = 0.7f),
                     fontSize = 16.sp
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+
+                // Loan Book Button
                 Row(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier.fillMaxWidth()

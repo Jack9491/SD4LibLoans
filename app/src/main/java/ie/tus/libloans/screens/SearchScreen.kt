@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
+// SearchScreen - Entry point for searching books
 @Composable
 fun SearchScreen(navController: NavHostController) {
     // Mock book data
@@ -27,6 +28,7 @@ fun SearchScreen(navController: NavHostController) {
         )
     }
 
+    // Main Surface Container
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -41,10 +43,11 @@ fun SearchScreen(navController: NavHostController) {
     }
 }
 
+// SearchScreenContent - Displays the search bar and list of books
 @Composable
 private fun SearchScreenContent(
-    books: List<String>,
-    onDetailsClick: (String) -> Unit
+    books: List<String>,              // List of books to display
+    onDetailsClick: (String) -> Unit  // Callback for viewing book details
 ) {
     Column(
         modifier = Modifier
@@ -52,7 +55,7 @@ private fun SearchScreenContent(
             .background(Color(0xFF101010)) // Dark background
             .padding(16.dp)
     ) {
-        // Top Bar
+        // Screen Title
         Text(
             text = "Search Books",
             color = Color(0xFFFBC02D), // Yellow color
@@ -61,25 +64,26 @@ private fun SearchScreenContent(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Search Bar
+        // Search Bar Component
         SearchBar()
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Book List
+        // Book List Component
         BookList(books = books, onDetailsClick = onDetailsClick)
     }
 }
 
+// SearchBar - A text field for entering search input
 @Composable
 private fun SearchBar() {
-    var searchText by remember { mutableStateOf(TextFieldValue("")) }
+    var searchText by remember { mutableStateOf(TextFieldValue("")) } // State for search input
 
     OutlinedTextField(
         value = searchText,
-        onValueChange = { searchText = it },
+        onValueChange = { searchText = it }, // Update the search input
         placeholder = { Text("Search...", color = Color.Gray) },
-        leadingIcon = {
+        leadingIcon = { // Search icon on the left
             Icon(
                 imageVector = Icons.Filled.Search,
                 contentDescription = "Search Icon",
@@ -87,7 +91,7 @@ private fun SearchBar() {
             )
         },
         singleLine = true,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(8.dp), // Rounded corners
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color.Transparent,
             unfocusedBorderColor = Color.Transparent,
@@ -102,22 +106,36 @@ private fun SearchBar() {
     )
 }
 
+// BookList - Displays a list of books using LazyColumn
 @Composable
-private fun BookList(books: List<String>, onDetailsClick: (String) -> Unit) {
+private fun BookList(
+    books: List<String>,              // List of books
+    onDetailsClick: (String) -> Unit  // Callback for viewing book details
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        // Generate rows for each book
         itemsIndexed(books) { index, book ->
-            BookRow(index = index + 1, bookName = book, onDetailsClick = { onDetailsClick(book) })
+            BookRow(
+                index = index + 1, // Row number
+                bookName = book,
+                onDetailsClick = { onDetailsClick(book) }
+            )
         }
     }
 }
 
+// BookRow - Displays an individual book row with details button
 @Composable
-private fun BookRow(index: Int, bookName: String, onDetailsClick: () -> Unit) {
+private fun BookRow(
+    index: Int,             // Book number
+    bookName: String,       // Book name
+    onDetailsClick: () -> Unit // Callback when 'View Book Details' is clicked
+) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color(0xFFFBC02D)), // Yellow background
         shape = RoundedCornerShape(8.dp),
@@ -132,20 +150,22 @@ private fun BookRow(index: Int, bookName: String, onDetailsClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // Book Index and Name
             Column {
                 Text(
-                    text = "$index",
+                    text = "$index", // Display book number
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = bookName,
+                    text = bookName, // Display book name
                     color = Color.White,
                     fontSize = 16.sp
                 )
             }
 
+            // Button to view book details
             Button(
                 onClick = onDetailsClick,
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
@@ -155,4 +175,3 @@ private fun BookRow(index: Int, bookName: String, onDetailsClick: () -> Unit) {
         }
     }
 }
-

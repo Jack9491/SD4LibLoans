@@ -13,12 +13,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ie.tus.libloans.common.BookSelectionList
 
-// LoanScreen - Entry point for loaning books
+// ReturnsScreen - Entry point for returning books
 @Composable
-fun LoanScreen(navController: NavHostController) {
-    // Mock data: List of books available for loaning
-    val loanBooks = remember {
-        mutableStateListOf("Book 1", "Book 2", "Book 3", "Book 4")
+fun ReturnsScreen(navController: NavHostController) {
+    // Mock data: List of books available for return
+    val returnBooks = remember {
+        mutableStateListOf("Book 1 is due to be returned", "Book 2 is overdue")
     }
 
     // Main surface that hosts the content
@@ -26,20 +26,20 @@ fun LoanScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        LoanScreenContent(
-            loanBooks = loanBooks, // Pass book list
-            onLoanBooksClick = {
-                // TODO: Loan action logic
+        ReturnsScreenContent(
+            returnBooks = returnBooks, // Pass the list of books to content
+            onReturnBooksClick = {
+                // TODO: Logic for returning books
             }
         )
     }
 }
 
-// LoanScreenContent - Displays book list for loaning
+// ReturnsScreenContent - UI content for returning books
 @Composable
-private fun LoanScreenContent(
-    loanBooks: List<String>,     // List of books to display
-    onLoanBooksClick: () -> Unit // Callback when the loan button is clicked
+private fun ReturnsScreenContent(
+    returnBooks: List<String>,     // List of books to display
+    onReturnBooksClick: () -> Unit // Callback when the return button is clicked
 ) {
     Column(
         modifier = Modifier
@@ -49,18 +49,18 @@ private fun LoanScreenContent(
     ) {
         // Screen Title
         Text(
-            text = "Loan a Book",
+            text = "Return a Book",
             color = Color(0xFFFBC02D), // Yellow color
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // List of books with a button to loan selected books
+        // Book Selection List
         BookSelectionList(
-            books = loanBooks,             // Books to display
-            buttonText = "Loan Selected Books", // Button text
-            onButtonClick = onLoanBooksClick   // Loan button action
+            books = returnBooks,             // List of books to display
+            buttonText = "Return Selected Books", // Button text for returning
+            onButtonClick = onReturnBooksClick   // Callback for button click
         )
     }
 }

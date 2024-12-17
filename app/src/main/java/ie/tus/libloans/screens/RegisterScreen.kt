@@ -15,26 +15,30 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 
+// RegisterScreen - Entry point for user registration with Firebase Authentication
 @Composable
 fun RegisterScreen(navController: NavHostController) {
-    val context = LocalContext.current
-    val auth = remember { FirebaseAuth.getInstance() }
-    var isLoading by remember { mutableStateOf(false) }
+    val context = LocalContext.current // Access current context for Toast messages
+    val auth = remember { FirebaseAuth.getInstance() } // FirebaseAuth instance
+    var isLoading by remember { mutableStateOf(false) } // Loading state for the register button
 
     Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        // Register screen content
         RegisterScreenContent(
             onRegisterSubmit = { email, password ->
-                isLoading = true
+                isLoading = true // Show loading state
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
-                        isLoading = false
+                        isLoading = false // Stop loading
                         if (task.isSuccessful) {
+                            // Registration successful
                             Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
                             navController.navigate("loginScreen") // Navigate to LoginScreen
                         } else {
+                            // Registration failed, display error
                             Toast.makeText(
                                 context,
                                 "Registration Failed: ${task.exception?.message}",
@@ -43,28 +47,32 @@ fun RegisterScreen(navController: NavHostController) {
                         }
                     }
             },
-            isLoading = isLoading
+            isLoading = isLoading // Pass loading state to content
         )
     }
 }
 
+// RegisterScreenContent - UI content for registration functionality
 @Composable
 private fun RegisterScreenContent(
-    onRegisterSubmit: (String, String) -> Unit,
-    isLoading: Boolean
+    onRegisterSubmit: (String, String) -> Unit, // Callback for registration action
+    isLoading: Boolean // Flag to show loading indicator
 ) {
+    // State for input fields
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
+    // Main layout container
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center, // Center vertically
+        horizontalAlignment = Alignment.CenterHorizontally // Center horizontally
     ) {
+        // Screen Title
         Text(
             text = "Register",
             fontSize = 24.sp,
@@ -74,7 +82,7 @@ private fun RegisterScreenContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Input Fields
+        // Name Input Field
         OutlinedTextField(
             value = name.value,
             onValueChange = { name.value = it },
@@ -84,6 +92,7 @@ private fun RegisterScreenContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Email Input Field
         OutlinedTextField(
             value = email.value,
             onValueChange = { email.value = it },
@@ -93,6 +102,7 @@ private fun RegisterScreenContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Username Input Field
         OutlinedTextField(
             value = username.value,
             onValueChange = { username.value = it },
@@ -102,11 +112,12 @@ private fun RegisterScreenContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Password Input Field
         OutlinedTextField(
             value = password.value,
             onValueChange = { password.value = it },
             label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = PasswordVisualTransformation(), // Hide password text
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -115,17 +126,19 @@ private fun RegisterScreenContent(
         // Register Button
         Button(
             onClick = {
-                onRegisterSubmit(email.value, password.value)
+                onRegisterSubmit(email.value, password.value) // Trigger registration action
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            enabled = !isLoading // Disable button when loading
         ) {
             if (isLoading) {
+                // Show loading spinner when registering
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier.size(24.dp)
                 )
             } else {
+                // Default button text
                 Text(text = "Register")
             }
         }

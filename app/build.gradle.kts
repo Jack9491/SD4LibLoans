@@ -72,10 +72,10 @@ dependencies {
     implementation(libs.firebase.auth)
 
     // Google Maps and Location Services
-    implementation(libs.play.services.maps)
-    implementation(libs.maps.compose)
-    implementation(libs.play.services.location)
-    implementation("com.google.maps.android:maps-compose:4.0.1")
+//    implementation(libs.play.services.maps)
+//    implementation(libs.maps.compose)
+//    implementation(libs.play.services.location)
+//    implementation("com.google.maps.android:maps-compose:4.0.0")
 
     // Testing libraries
     testImplementation(libs.junit)
@@ -85,4 +85,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }

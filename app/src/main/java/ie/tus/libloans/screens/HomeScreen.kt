@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import ie.tus.libloans.R
 import ie.tus.libloans.navigation.Screen
 
+// Main Home Screen - Entry point for navigation options
 @Composable
 fun HomeScreen(navController: NavHostController) {
     Surface(
@@ -24,30 +25,34 @@ fun HomeScreen(navController: NavHostController) {
             .fillMaxSize()
     ) {
         HomeScreenContent(
-            onSearchClick = { navController.navigate(Screen.SearchScreen.route) },
-            onLoansClick = { navController.navigate(Screen.LoanScreen.route) },
-            onMapClick = { navController.navigate(Screen.MapScreen.route) }
+            onSearchClick = { navController.navigate(Screen.SearchScreen.route) }, // Navigate to Search
+            onLoansClick = { navController.navigate(Screen.LoanScreen.route) },   // Navigate to Loans
+            onReturnsClick = { navController.navigate(Screen.ReturnsScreen.route) }, // Navigate to Returns
+            onMapClick = { navController.navigate(Screen.MapScreen.route) }      // Navigate to Map
         )
     }
 }
 
+// Home Screen Content - Displays Cards for different options
 @Composable
 private fun HomeScreenContent(
     onSearchClick: () -> Unit,
     onLoansClick: () -> Unit,
+    onReturnsClick: () -> Unit,
     onMapClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF101010))
+            .background(Color(0xFF101010)) // Dark background
             .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Home Title
         Text(
             text = "Home",
-            color = Color(0xFFFBC02D),
+            color = Color(0xFFFBC02D), // Yellow text color
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -71,6 +76,14 @@ private fun HomeScreenContent(
             onClick = onLoansClick
         )
 
+        // Returns Card
+        HomeCard(
+            title = "Returns",
+            description = "Click here to access your current returns",
+            icon = R.drawable.ic_loans,
+            onClick = onReturnsClick
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Map Card
@@ -83,19 +96,20 @@ private fun HomeScreenContent(
     }
 }
 
+// Reusable Card Component for Home Options
 @Composable
 private fun HomeCard(
-    title: String,
-    description: String,
-    icon: Int,
-    onClick: () -> Unit
+    title: String,         // Card Title
+    description: String,   // Description under the title
+    icon: Int,             // Resource ID for the card icon
+    onClick: () -> Unit    // Click callback
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFBC02D)),
-        shape = RoundedCornerShape(16.dp),
+            .clickable { onClick() }, // Trigger click callback
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFBC02D)), // Yellow background
+        shape = RoundedCornerShape(16.dp), // Rounded corners
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Row(
@@ -104,6 +118,7 @@ private fun HomeCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Left Icon
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = title,
@@ -113,6 +128,7 @@ private fun HomeCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
+            // Title and Description
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
@@ -122,11 +138,12 @@ private fun HomeCard(
                 )
                 Text(
                     text = description,
-                    color = Color.White.copy(alpha = 0.7f),
+                    color = Color.White.copy(alpha = 0.7f), // Slightly transparent text
                     fontSize = 14.sp
                 )
             }
 
+            // Right Arrow Icon
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_right),
                 contentDescription = "Navigate",
