@@ -71,12 +71,20 @@ dependencies {
     // Firebase Authentication
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore.ktx)
+    implementation("io.coil-kt:coil-compose:2.3.0")
+
+
 
     // Google Maps and Location Services
 //    implementation(libs.play.services.maps)
 //    implementation(libs.maps.compose)
 //    implementation(libs.play.services.location)
 //    implementation("com.google.maps.android:maps-compose:4.0.0")
+
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.maps.android:maps-compose:4.0.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
 
     // Testing libraries
     testImplementation(libs.junit)

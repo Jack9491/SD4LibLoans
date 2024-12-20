@@ -13,6 +13,7 @@ import ie.tus.libloans.screens.BorrowScreen
 import ie.tus.libloans.screens.HomeScreen
 import ie.tus.libloans.screens.LoanScreen
 import ie.tus.libloans.screens.LoginScreen
+import ie.tus.libloans.screens.MapScreen
 import ie.tus.libloans.screens.RegisterScreen
 import ie.tus.libloans.screens.ReturnsScreen
 import ie.tus.libloans.screens.SearchScreen
@@ -33,6 +34,8 @@ fun BuildNavigationGraph(
         composable(Screen.SearchScreen.route) { SearchScreen(navController) }
         composable("loanScreen") { LoanScreen(navController) }
         composable("returnsScreen") { ReturnsScreen(navController) }
+        composable("mapScreen") { MapScreen(navController) }
+
 
         // BookDetailsScreen with bookName parameter
         composable(

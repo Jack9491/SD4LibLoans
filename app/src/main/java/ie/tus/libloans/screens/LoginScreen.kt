@@ -1,6 +1,7 @@
 package ie.tus.libloans.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -8,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -15,30 +17,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 
-// LoginScreen - Entry point for user login with Firebase Authentication
 @Composable
 fun LoginScreen(navController: NavHostController) {
     val context = LocalContext.current
-    val auth = remember { FirebaseAuth.getInstance() } // FirebaseAuth instance
-    var isLoading by remember { mutableStateOf(false) } // Loading state for login button
+    val auth = remember { FirebaseAuth.getInstance() }
+    var isLoading by remember { mutableStateOf(false) }
 
     Surface(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
-        // Content of the Login Screen
         LoginScreenContent(
             onLoginSubmit = { email, password ->
-                isLoading = true // Show loading state
+                isLoading = true
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
-                        isLoading = false // Stop loading
+                        isLoading = false
                         if (task.isSuccessful) {
-                            // Login successful
                             Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                            navController.navigate("homeScreen") // Navigate to home
+                            navController.navigate("homeScreen")
                         } else {
-                            // Login failed, show error message
                             Toast.makeText(
                                 context,
                                 "Login Failed: ${task.exception?.message}",
@@ -52,70 +49,75 @@ fun LoginScreen(navController: NavHostController) {
     }
 }
 
-// LoginScreenContent - UI content for login functionality
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoginScreenContent(
-    onLoginSubmit: (String, String) -> Unit, // Callback for login action
-    isLoading: Boolean // Flag to show loading indicator
+    onLoginSubmit: (String, String) -> Unit,
+    isLoading: Boolean
 ) {
-    // State for email and password fields
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
-    // Main layout container
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color(0xFF101010)),
+        contentAlignment = Alignment.Center
     ) {
-        // Screen Title
-        Text(
-            text = "Login",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.DarkGray
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Email Input Field
-        OutlinedTextField(
-            value = email.value,
-            onValueChange = { email.value = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Password Input Field
-        OutlinedTextField(
-            value = password.value,
-            onValueChange = { password.value = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(), // Hide password text
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Login Button
-        Button(
-            onClick = { onLoginSubmit(email.value, password.value) }, // Trigger login action
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading // Disable button while loading
+        Column(
+            modifier = Modifier
+                .padding(24.dp)
+                .widthIn(max = 400.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (isLoading) {
-                // Show loading spinner when login is in progress
-                CircularProgressIndicator(
-                    color = Color.White,
-                    modifier = Modifier.size(24.dp)
+            Text(
+                text = "Login",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFFBC02D)
+            )
+
+            OutlinedTextField(
+                value = email.value,
+                onValueChange = { email.value = it },
+                label = { Text("Email", color = Color.White.copy(alpha = 0.7f)) },
+                textStyle = TextStyle(color = Color.White),
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xFFFBC02D),
+                    unfocusedBorderColor = Color.Gray
                 )
-            } else {
-                // Default button text
-                Text(text = "Login")
+            )
+
+            OutlinedTextField(
+                value = password.value,
+                onValueChange = { password.value = it },
+                label = { Text("Password", color = Color.White.copy(alpha = 0.7f)) },
+                textStyle = TextStyle(color = Color.White),
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xFFFBC02D),
+                    unfocusedBorderColor = Color.Gray
+                )
+            )
+
+            Button(
+                onClick = { onLoginSubmit(email.value, password.value) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                enabled = !isLoading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFBC02D)
+                )
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text("Login", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
             }
         }
     }

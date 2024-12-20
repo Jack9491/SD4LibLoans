@@ -1,13 +1,16 @@
 package ie.tus.libloans.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -53,6 +56,7 @@ fun RegisterScreen(navController: NavHostController) {
 }
 
 // RegisterScreenContent - UI content for registration functionality
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RegisterScreenContent(
     onRegisterSubmit: (String, String) -> Unit, // Callback for registration action
@@ -68,6 +72,7 @@ private fun RegisterScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFF101010)) // Dark background
             .padding(16.dp),
         verticalArrangement = Arrangement.Center, // Center vertically
         horizontalAlignment = Alignment.CenterHorizontally // Center horizontally
@@ -75,61 +80,98 @@ private fun RegisterScreenContent(
         // Screen Title
         Text(
             text = "Register",
-            fontSize = 24.sp,
+            fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.DarkGray
+            color = Color(0xFFFBC02D),
+            modifier = Modifier.padding(bottom = 24.dp)
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         // Name Input Field
         OutlinedTextField(
             value = name.value,
             onValueChange = { name.value = it },
-            label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Name", color = Color.Gray) },
+            textStyle = TextStyle(color = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFFFBC02D),
+                unfocusedBorderColor = Color.Gray,
+                //textColor = Color.White,
+                cursorColor = Color.White
+            )
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // Email Input Field
         OutlinedTextField(
             value = email.value,
             onValueChange = { email.value = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Email", color = Color.Gray) },
+            textStyle = TextStyle(color = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFFFBC02D),
+                unfocusedBorderColor = Color.Gray,
+                //textColor = Color.White,
+                cursorColor = Color.White
+            )
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // Username Input Field
         OutlinedTextField(
             value = username.value,
             onValueChange = { username.value = it },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Username", color = Color.Gray) },
+            textStyle = TextStyle(color = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFFFBC02D),
+                unfocusedBorderColor = Color.Gray,
+                //textColor = Color.White,
+                cursorColor = Color.White
+            )
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // Password Input Field
         OutlinedTextField(
             value = password.value,
             onValueChange = { password.value = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(), // Hide password text
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Password", color = Color.Gray) },
+            textStyle = TextStyle(color = Color.White),
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFFFBC02D),
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = Color.White
+            )
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         // Register Button
         Button(
             onClick = {
                 onRegisterSubmit(email.value, password.value) // Trigger registration action
             },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading // Disable button when loading
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            enabled = !isLoading,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFBC02D),
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(8.dp)
         ) {
             if (isLoading) {
                 // Show loading spinner when registering
@@ -139,7 +181,11 @@ private fun RegisterScreenContent(
                 )
             } else {
                 // Default button text
-                Text(text = "Register")
+                Text(
+                    text = "Register",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

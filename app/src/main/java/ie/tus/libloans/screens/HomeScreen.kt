@@ -8,16 +8,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import ie.tus.libloans.R
 import ie.tus.libloans.navigation.Screen
 
-// Main Home Screen - Entry point for navigation options
 @Composable
 fun HomeScreen(navController: NavHostController) {
     Surface(
@@ -25,111 +26,157 @@ fun HomeScreen(navController: NavHostController) {
             .fillMaxSize()
     ) {
         HomeScreenContent(
-            onSearchClick = { navController.navigate(Screen.SearchScreen.route) }, // Navigate to Search
-            onLoansClick = { navController.navigate(Screen.LoanScreen.route) },   // Navigate to Loans
-            onReturnsClick = { navController.navigate(Screen.ReturnsScreen.route) }, // Navigate to Returns
-            onMapClick = { navController.navigate(Screen.MapScreen.route) }      // Navigate to Map
+            onSearchClick = { navController.navigate(Screen.SearchScreen.route) },
+            onLoansClick = { navController.navigate(Screen.LoanScreen.route) },
+            onReturnsClick = { navController.navigate(Screen.ReturnsScreen.route) },
+            onMapClick = { navController.navigate(Screen.MapScreen.route) },
+            onLogoutClick = {
+                FirebaseAuth.getInstance().signOut() // Log out the user
+                navController.navigate(Screen.WelcomeScreen.route) {
+                    popUpTo(Screen.HomeScreen.route) { inclusive = true } // Clear backstack
+                }
+            }
         )
     }
 }
 
-// Home Screen Content - Displays Cards for different options
 @Composable
 private fun HomeScreenContent(
     onSearchClick: () -> Unit,
     onLoansClick: () -> Unit,
     onReturnsClick: () -> Unit,
-    onMapClick: () -> Unit
+    onMapClick: () -> Unit,
+    onLogoutClick: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF101010)) // Dark background
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color(0xFF101010)), // Dark background
+        contentAlignment = Alignment.Center
     ) {
-        // Home Title
-        Text(
-            text = "Home",
-            color = Color(0xFFFBC02D), // Yellow text color
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .widthIn(max = 400.dp), // Limit the width for better UI on larger screens
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Title at the top of the screen
+            Text(
+                text = "Welcome to LibLoans",
+                color = Color(0xFFFBC02D),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp)
+            )
 
-        // Search Card
-        HomeCard(
-            title = "Search",
-            description = "Click here to view the Library Directory",
-            icon = R.drawable.ic_search,
-            onClick = onSearchClick
-        )
+            // Search Card
+            HomeCard(
+                title = "Search Library",
+                description = "Browse and explore the library catalog",
+                icon = R.drawable.ic_search,
+                onClick = onSearchClick
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            // Loans Card
+            HomeCard(
+                title = "Your Loans",
+                description = "View and manage your loaned books",
+                icon = R.drawable.ic_loans,
+                onClick = onLoansClick
+            )
 
-        // Loans Card
-        HomeCard(
-            title = "Loans",
-            description = "Click here to access your current loans",
-            icon = R.drawable.ic_loans,
-            onClick = onLoansClick
-        )
+            // Returns Card
+            HomeCard(
+                title = "Book Returns",
+                description = "Check and return your borrowed books",
+                icon = R.drawable.ic_returns,
+                onClick = onReturnsClick
+            )
 
-        // Returns Card
-        HomeCard(
-            title = "Returns",
-            description = "Click here to access your current returns",
-            icon = R.drawable.ic_loans,
-            onClick = onReturnsClick
-        )
+            // Map Card
+            HomeCard(
+                title = "Find a Library",
+                description = "Locate the nearest TUS library on the map",
+                icon = R.drawable.ic_map,
+                onClick = onMapClick
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Map Card
-        HomeCard(
-            title = "Find Nearest Library",
-            description = "Click here to view the nearest TUS library on the map",
-            icon = R.drawable.ic_map,
-            onClick = onMapClick
-        )
+            // Logout Button
+            Button(
+                onClick = onLogoutClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(Color(0xFFF57C00), Color(0xFFFBC02D)) // Gradient from orange to yellow
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Logout",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+        }
     }
 }
 
-// Reusable Card Component for Home Options
 @Composable
 private fun HomeCard(
-    title: String,         // Card Title
-    description: String,   // Description under the title
-    icon: Int,             // Resource ID for the card icon
-    onClick: () -> Unit    // Click callback
+    title: String,
+    description: String,
+    icon: Int,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }, // Trigger click callback
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFBC02D)), // Yellow background
-        shape = RoundedCornerShape(16.dp), // Rounded corners
-        elevation = CardDefaults.cardElevation(8.dp)
+            .height(100.dp)
+            .clickable { onClick() }
+            .padding(horizontal = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFBC02D)),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Left Icon
+            // Icon on the left
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = title,
                 tint = Color.White,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(end = 16.dp)
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Title and Description
-            Column(modifier = Modifier.weight(1f)) {
+            // Title and description text
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
                     text = title,
                     color = Color.White,
@@ -138,12 +185,13 @@ private fun HomeCard(
                 )
                 Text(
                     text = description,
-                    color = Color.White.copy(alpha = 0.7f), // Slightly transparent text
-                    fontSize = 14.sp
+                    color = Color.White.copy(alpha = 0.7f),
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
 
-            // Right Arrow Icon
+            // Navigation Arrow Icon
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_right),
                 contentDescription = "Navigate",
