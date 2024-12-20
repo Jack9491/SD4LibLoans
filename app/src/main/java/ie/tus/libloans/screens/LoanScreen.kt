@@ -2,6 +2,9 @@ package ie.tus.libloans.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,56 +14,115 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import ie.tus.libloans.common.BookSelectionList
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-// LoanScreen - Entry point for loaning books
 @Composable
 fun LoanScreen(navController: NavHostController) {
-    // Mock data: List of books available for loaning
-    val loanBooks = remember {
-        mutableStateListOf("Book 1", "Book 2", "Book 3", "Book 4")
+    val firestore = FirebaseFirestore.getInstance()
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    var loanedBooks by remember { mutableStateOf<List<Map<String, Any>>>(emptyList()) }
+
+    // Fetch loaned books from Firestore
+    LaunchedEffect(userId) {
+        if (userId != null) {
+            firestore.collection("users").document(userId).collection("loans").get()
+                .addOnSuccessListener { querySnapshot ->
+                    loanedBooks = querySnapshot.documents.mapNotNull { it.data }
+                }
+        }
     }
 
-    // Main surface that hosts the content
     Surface(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         LoanScreenContent(
-            loanBooks = loanBooks, // Pass book list
-            onLoanBooksClick = {
-                // TODO: Loan action logic
-            }
+            loanedBooks = loanedBooks
         )
     }
 }
 
-// LoanScreenContent - Displays book list for loaning
 @Composable
 private fun LoanScreenContent(
-    loanBooks: List<String>,     // List of books to display
-    onLoanBooksClick: () -> Unit // Callback when the loan button is clicked
+    loanedBooks: List<Map<String, Any>> // List of loaned books
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF101010)) // Dark background
+            .background(Color(0xFF101010))
             .padding(16.dp)
     ) {
         // Screen Title
         Text(
-            text = "Loan a Book",
-            color = Color(0xFFFBC02D), // Yellow color
+            text = "Your Loaned Books",
+            color = Color(0xFFFBC02D),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // List of books with a button to loan selected books
-        BookSelectionList(
-            books = loanBooks,             // Books to display
-            buttonText = "Loan Selected Books", // Button text
-            onButtonClick = onLoanBooksClick   // Loan button action
-        )
+        // Display loaned books
+        if (loanedBooks.isEmpty()) {
+            // Display a message if no books are loaned
+            Text(
+                text = "You have no books currently loaned.",
+                color = Color.Gray,
+                fontSize = 16.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(loanedBooks) { book ->
+                    LoanedBookRow(
+                        title = book["bookTitle"]?.toString() ?: "Unknown Title",
+                        borrowDate = book["borrowDate"]?.toString() ?: "Unknown",
+                        returnDate = book["returnDate"]?.toString() ?: "Unknown"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoanedBookRow(
+    title: String,
+    borrowDate: String,
+    returnDate: String
+) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFBC02D)),
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = title,
+                    color = Color.Black,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Borrowed: $borrowDate",
+                    color = Color.Black.copy(alpha = 0.7f),
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = "Due: $returnDate",
+                    color = Color.Black.copy(alpha = 0.7f),
+                    fontSize = 14.sp
+                )
+            }
+        }
     }
 }

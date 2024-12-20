@@ -70,6 +70,7 @@ dependencies {
 
     // Firebase Authentication
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore.ktx)
 
     // Google Maps and Location Services
 //    implementation(libs.play.services.maps)
