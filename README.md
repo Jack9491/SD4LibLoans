@@ -31,4 +31,11 @@
 3. The books details can be viewed
 4. A book can be Borrowed by a user, and it will be alllowed to be in their possesition for 3 weeks using a real time date picker
 5. A return screen allows a user to return a book after they take it out on loan
-   
+
+
+# Commit 4 (FINAL): 
+
+1. Added images for the books to all associated screens (loans, returns, search, details)
+2. Added app logo
+3. Added site wide css for consistency
+4. Removed unused files
