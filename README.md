@@ -22,3 +22,13 @@
 
 1. Re added in the google services dependencies etc to stop the app from crashing
 2. Commented on all the code for readablility 
+
+
+# Commit 3: 
+
+1. A logged in user can Search for books in the Firestore DB
+2. This search screen allows for search by book name or an optional dropdown selction by genre
+3. The books details can be viewed
+4. A book can be Borrowed by a user, and it will be alllowed to be in their possesition for 3 weeks using a real time date picker
+5. A return screen allows a user to return a book after they take it out on loan
+   
